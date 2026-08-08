@@ -276,6 +276,8 @@ section{ padding-block:var(--pad); position:relative; }
   display:flex; flex-wrap:wrap; gap:8px 14px; align-items:center;
 }
 .hero-facts b{ color:var(--indigo); font-weight:600; }
+.hero-facts .fact:not(:last-child)::after{ content:'·'; margin-left:14px; color:var(--text-muted); }
+.hero-ghost{ display:none; }
 .hero-media{ position:relative; }
 .hero-media .shot{
   clip-path:polygon(14% 0, 100% 0, 100% 100%, 0 100%);
@@ -741,25 +743,44 @@ footer{ background:var(--indigo); color:rgba(255,255,255,.6); }
 @media (max-width:768px){
   body{ font-size:16px; }
   .pl-logo{ width:96px; height:96px; }
-  .hero{ padding-top:0; }
-  .hero-grid{ gap:0; }
-  .hero-media{ order:-1; margin-inline:calc(var(--gut)*-1); }
-  .hero-media .shot{ clip-path:none; border-radius:0; }
-  .hero-media img{ height:62vh; }
-  .hero-copy{
-    max-width:none; margin-top:-90px; position:relative; z-index:2;
-    background:rgba(38,42,94,.78);
-    -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px);
-    color:#fff; padding:24px 22px 30px; border-radius:var(--radius) var(--radius) 0 0;
+  /* --- hero: без фото, полноэкранный индиго-блок --- */
+  .hero{
+    padding:calc(env(safe-area-inset-top) + 28px) 0 40px;
+    background:var(--indigo); position:relative; overflow:hidden;
   }
-  .hero-copy .eyebrow{ color:var(--mustard); }
-  .hero h1{ font-size:min(40px,9vw); }
+  .hero::before{ opacity:.05; filter:invert(1); } /* кирпичная текстура поверх индиго, чуть светлее */
+  .hero-grid{ display:block; }
+  .hero-media{ display:none; }
+  .hero-copy{
+    position:relative; z-index:1; color:#fff;
+    padding-top:6px;
+  }
+  .hero-ghost{
+    display:block; position:absolute; z-index:0; pointer-events:none; user-select:none;
+    right:-.12em; top:-.2em;
+    font-family:'Onest',sans-serif; font-weight:800; font-size:56vw; line-height:1;
+    color:transparent; -webkit-text-stroke:1.5px rgba(255,255,255,.10);
+  }
+  .hero-copy .eyebrow{ position:relative; color:var(--mustard); }
+  .hero h1{ font-size:min(42px,10.5vw); position:relative; }
   .mark{ color:var(--mustard); }
-  .hero-sub,.hero-facts{ color:rgba(255,255,255,.75); }
-  .hero-facts b{ color:#fff; }
-  .hero-cta{ flex-direction:column; }
+  .hero-sub{ color:rgba(255,255,255,.72); position:relative; }
+  .hero-cta{ flex-direction:column; position:relative; }
   .hero-cta .btn{ width:100%; }
   .hero-copy .btn-ghost{ border-color:rgba(255,255,255,.4); color:#fff; }
+
+  .hero-facts{
+    position:relative; margin-top:28px; padding-top:20px;
+    border-top:1px solid rgba(255,255,255,.14);
+    gap:8px;
+  }
+  .hero-facts .fact{
+    color:rgba(255,255,255,.85); font-size:13px;
+    border:1px solid rgba(255,255,255,.18); border-radius:999px;
+    padding:7px 12px;
+  }
+  .hero-facts .fact:not(:last-child)::after{ content:none; }
+  .hero-facts b{ color:var(--mustard); }
 
   .ticker{ height:52px; --marquee-dur:22s; }
   .ticker-seq span{ font-size:13px; padding:0 16px; }
@@ -883,6 +904,7 @@ footer{ background:var(--indigo); color:rgba(255,255,255,.6); }
     <div class="wrap">
       <div class="hero-grid">
         <div class="hero-copy">
+          <span class="hero-ghost" aria-hidden="true">5</span>
           <p class="eyebrow">Тюмень · Герцена 84к2 · свой сервис в магазине</p>
           <h1>
             <span class="ln"><i style="--i:0">Гарантия <span class="mark">5&nbsp;лет.<svg viewBox="0 0 300 24" preserveAspectRatio="none" aria-hidden="true"><path d="M6 16C58 7 112 19 168 11c38-5 78 3 126-2"/></svg></span></i></span>
@@ -895,15 +917,18 @@ footer{ background:var(--indigo); color:rgba(255,255,255,.6); }
             <a class="btn btn-ghost" href="#warranty">Что входит в гарантию</a>
           </div>
           <p class="hero-facts">
-            <b>4,7</b> на 2ГИС <span aria-hidden="true">·</span> <b>1100+</b> отзывов <span aria-hidden="true">·</span> ежедневно 09:00–22:00
+            <span class="fact"><b>4,7</b>&nbsp;на 2ГИС</span>
+            <span class="fact"><b>1100+</b>&nbsp;отзывов</span>
+            <span class="fact">ежедневно 09:00–22:00</span>
           </p>
         </div>
 
-        <div class="hero-media">
+        <div class="hero-media" aria-hidden="true">
           <div class="shot plx" data-plx="8">
             <picture>
-              <source srcset="hero-logo-wall.webp" type="image/webp">
-              <img src="hero-logo-wall.jpg" width="1200" height="1400"
+              <source media="(min-width:769px)" srcset="hero-logo-wall.webp" type="image/webp">
+              <source media="(min-width:769px)" srcset="hero-logo-wall.jpg" type="image/jpeg">
+              <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" width="1200" height="1400"
                    alt="Белая кирпичная стена с объёмным логотипом Take Phone в торговом зале">
             </picture>
           </div>
